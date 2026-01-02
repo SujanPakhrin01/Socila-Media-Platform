@@ -6,8 +6,8 @@ class User(AbstractUser):
         ('admin','Admin'),
         ('user',"User"),
     )
-    username = models.CharField(max_length=50,unique=True)
-    email = models.EmailField(unique=True)
+    # username = models.CharField(max_length=50,unique=True)
+    # email = models.EmailField(unique=True)
     profile_picture = models.ImageField(upload_to='profile_pics/',blank=True,null=True)
     bio = models.CharField(max_length=100,blank=True)
     role = models.CharField(max_length=10,choices=Role_choices,default='user')
