@@ -7,7 +7,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
+class ProfileView(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
 
+    def list(self, request):
+        users = self.get_queryset()
+        serializer = self.get_serializer(users, many=True)
+        return Response(serializer.data)
 class Home(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -28,15 +36,6 @@ class CommentView(ModelViewSet):
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
     
-class FollowView(ModelViewSet):
-    queryset = Follow.objects.all()
-    serializer_class = FollowSerializer
-    permission_classes = [IsAuthenticated]
-
-    def list(self, request):
-        posts = self.get_queryset()
-        serializer = self.get_serializer(posts, many=True)
-        return Response(serializer.data)
     
 class NotifictionView(ModelViewSet):
     queryset = Notification.objects.all()
@@ -48,19 +47,9 @@ class NotifictionView(ModelViewSet):
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
     
-class AnalyticsView(ModelViewSet):
-    queryset = Analytics.objects.all()
-    serializer_class = AnalyticsSerializer
-    permission_classes = [IsAuthenticated]
-
-    def list(self, request):
-        posts = self.get_queryset()
-        serializer = self.get_serializer(posts, many=True)
-        return Response(serializer.data)
-    
-class Home(ModelViewSet):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
+class FollowView(ModelViewSet):
+    queryset = Follow.objects.all()
+    serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated]
 
     def list(self, request):
@@ -77,8 +66,15 @@ class LikeView(ModelViewSet):
         posts = self.get_queryset()
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
-    
+ 
 
 
+class AnalyticsView(ModelViewSet):
+    queryset = Analytics.objects.all()
+    serializer_class = AnalyticsSerializer
+    permission_classes = [IsAuthenticated]
 
-
+    def list(self, request):
+        posts = self.get_queryset()
+        serializer = self.get_serializer(posts, many=True)
+        return Response(serializer.data)
