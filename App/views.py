@@ -1,21 +1,12 @@
 from django.shortcuts import render
 from .models import *
-from .serializers import UserSerializer, PostSerializer, CommentSerializer, LikeSerializer, FollowSerializer, AnalyticsSerializer, NotificationSerializer
+from .serializers import UserSerializer, PostSerializer, CommentSerializer, LikeSerializer, FollowSerializer, AnalyticsSerializer, NotificationSerializer,TagSerializer
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
-class ProfileView(ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
-
-    def list(self, request):
-        users = self.get_queryset()
-        serializer = self.get_serializer(users, many=True)
-        return Response(serializer.data)
 class Home(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -25,6 +16,16 @@ class Home(ModelViewSet):
         posts = self.get_queryset()
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
+class ProfileView(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request):
+        users = self.get_queryset()
+        serializer = self.get_serializer(users, many=True)
+        return Response(serializer.data)
+    
     
 class CommentView(ModelViewSet):
     queryset = Comment.objects.all()
@@ -50,6 +51,15 @@ class NotifictionView(ModelViewSet):
 class FollowView(ModelViewSet):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request):
+        posts = self.get_queryset()
+        serializer = self.get_serializer(posts, many=True)
+        return Response(serializer.data)
+class TagView(ModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
     permission_classes = [IsAuthenticated]
 
     def list(self, request):
