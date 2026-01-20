@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'App',
     'rest_framework',
     'rest_framework_simplejwt',
-    "drf_spectacular",   #swagger
+    #"drf_spectacular",   #swagger
      'drf_yasg',
     
    
@@ -129,9 +129,9 @@ AUTH_USER_MODEL = 'App.User'
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
      
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -154,5 +154,17 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_CACHE_ALIAS = 'default'
 SESSION_COOKIE_AGE = 3600  # Set session to expire in 1 hour
 
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'Enter: Bearer <your_token>',
+        }
+    }
+}
 
 

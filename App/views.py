@@ -6,12 +6,14 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import filters
 
 class Home(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication] 
+    # permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter]
     search_fields = ['username']
 
@@ -24,7 +26,7 @@ class Home(ModelViewSet):
 class ProfileView(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication] 
     search_fields = ['username']
 
 
@@ -37,7 +39,8 @@ class ProfileView(ModelViewSet):
 class CommentView(ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication] 
+    # permission_classes = [IsAuthenticated]
 
     def list(self, request):
         posts = self.get_queryset()
@@ -48,7 +51,7 @@ class CommentView(ModelViewSet):
 class NotifictionView(ModelViewSet):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
-    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication] 
 
     def list(self, request):
         posts = self.get_queryset()
@@ -58,8 +61,7 @@ class NotifictionView(ModelViewSet):
 class FollowView(ModelViewSet):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
-    permission_classes = [IsAuthenticated]
-
+    authentication_classes = [JWTAuthentication] 
     def list(self, request):
         posts = self.get_queryset()
         serializer = self.get_serializer(posts, many=True)
@@ -67,7 +69,7 @@ class FollowView(ModelViewSet):
 class TagView(ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication] 
 
     def list(self, request):
         posts = self.get_queryset()
@@ -77,7 +79,7 @@ class TagView(ModelViewSet):
 class LikeView(ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
-    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication] 
 
     def list(self, request):
         posts = self.get_queryset()
@@ -89,7 +91,8 @@ class LikeView(ModelViewSet):
 class AnalyticsView(ModelViewSet):
     queryset = Analytics.objects.all()
     serializer_class = AnalyticsSerializer
-    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication] 
+    # permission_classes = [IsAuthenticated]
 
     def list(self, request):
         posts = self.get_queryset()
