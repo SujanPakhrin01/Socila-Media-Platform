@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     #"drf_spectacular",   #swagger
      'drf_yasg',
+    'django_seed',
     
    
     
@@ -129,9 +130,9 @@ AUTH_USER_MODEL = 'App.User'
 
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
      
         'rest_framework_simplejwt.authentication.JWTAuthentication',
