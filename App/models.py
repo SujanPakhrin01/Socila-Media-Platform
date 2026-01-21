@@ -13,8 +13,20 @@ class User(AbstractUser):
     role = models.CharField(max_length=10,choices=Role_choices,default='user')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
-
     
+    def get_followers(self):
+        return [f.follower for f in self.followers.all()]
+
+    def get_following(self):
+        return [f.following for f in self.following.all()]
+
+    def get_liked_posts(self):
+        return [l.post for l in self.likes.all() if l.like]
+
+    def get_comments_on_my_posts(self):
+        return Comment.objects.filter(post__user=self)
+
+
     def __str__(self):
         return self.username
 
@@ -24,6 +36,8 @@ class Post(models.Model):
     image = models.ImageField(upload_to='posts/',blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    like = models.BooleanField(null=True,blank=True,default=False)
+    comment = models.CharField(null=True,blank=True)
     
     def __str__(self):
         return f"post by {self.user.username}"
@@ -32,7 +46,6 @@ class Post(models.Model):
 class Comment(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     post = models.ForeignKey(Post,on_delete= models.CASCADE, related_name='comments')
-    text = models.TextField()
     
     created_at = models.DateTimeField(auto_now_add=True)
     
@@ -42,7 +55,7 @@ class Comment(models.Model):
 class Like(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     post = models.ForeignKey(Post,on_delete= models.CASCADE, related_name='likes')
-    
+    like = models.BooleanField(null=True,blank=True,default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
@@ -92,7 +105,6 @@ class Analytics(models.Model):
     total_posts = models.PositiveIntegerField(default=0)
     total_followers = models.PositiveIntegerField(default=0)
     total_following = models.PositiveIntegerField(default=0)
-
     updated_at = models.DateTimeField(auto_now=True)
 
 
