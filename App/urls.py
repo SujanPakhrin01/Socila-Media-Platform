@@ -7,7 +7,6 @@ from rest_framework_simplejwt.views import (
 from .views import ProfileView, Home, CommentView, NotifictionView, FollowView, TagView, LikeView, AnalyticsView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
