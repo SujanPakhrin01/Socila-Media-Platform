@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import filters
+from django.core.cache import cache
 
 class Home(ModelViewSet):
     queryset = Post.objects.all()
@@ -103,3 +104,14 @@ class AnalyticsView(ModelViewSet):
         posts = self.get_queryset()
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
+    
+    
+# Store a value
+cache.set('my_key', 'my_value', timeout=300)  # 5 minutes
+# Retrieve a value
+value = cache.get('my_key')
+print(value)  # Output: my_value
+# Delete a value
+cache.delete('my_key')
+# Check if key exists
+exists = cache.has_key('my_key')
