@@ -36,8 +36,7 @@ class Post(models.Model):
     image = models.ImageField(upload_to='posts/',blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    like = models.BooleanField(null=True,blank=True,default=False)
-    comment = models.CharField(null=True,blank=True)
+ 
     
     def __str__(self):
         return f"post by {self.user.username}"
