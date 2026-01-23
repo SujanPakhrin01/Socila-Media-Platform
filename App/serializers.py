@@ -1,9 +1,11 @@
 from . models import *
 from rest_framework import serializers
 from django.contrib.auth import get_user_model 
-from django.contrib.auth.models import User
 
 User = get_user_model()
+
+
+
 class UserSerializer(serializers.ModelSerializer):
     follower_count = serializers.IntegerField(source = 'follower.count',read_only = True)
     following_count = serializers.IntegerField(source ='following.count',read_only = True )
@@ -12,24 +14,26 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id','username','email','profile_picture','bio','role','follower_count','following_count'
-        ]        
-        
-class PostSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='User.username')
-    likes_count = serializers.IntegerField(source='likes.count',read_only=True)
-    commeng_count = serializers.IntegerField(source='comment.count',read_only=True)    
-    class Meta:
-        model = Post
-        fields = '__all__'
+        ]
         
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
     class Meta:
         model = Comment
-        fields = '__all__'
+        fields = ['id', 'user', 'created_at','text']
+        
+class PostSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='User.username')
+    likes_count = serializers.IntegerField(source='total_like', read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
+    class Meta:
+        model = Post
+        fields = ['id', 'user','content','image','likes_count','comments','created_at','updated_at']
+        
         
 class LikeSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
+
     class Meta:
         model = Like
         fields = '__all__'
@@ -37,6 +41,7 @@ class LikeSerializer(serializers.ModelSerializer):
         
 class FollowSerializer(serializers.ModelSerializer):
     follower = serializers.ReadOnlyField(source='follower.username')
+
     class Meta:
         model = Follow
         fields = '__all__'
@@ -74,10 +79,10 @@ class NotificationSerializer(serializers.ModelSerializer):
         
 class AnalyticsSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
+
     class Meta:
         model = Analytics
         fields = '__all__'
-        
 
 
 

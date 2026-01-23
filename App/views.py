@@ -15,10 +15,10 @@ from .serializers import SignupSerializer
 class Home(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    authentication_classes = [JWTAuthentication] 
+    # authentication_classes = [JWTAuthentication] 
     permission_classes = [AllowAny]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['username']
+    search_fields = ['username','id']
 
     def list(self, request):
         posts = self.get_queryset()
