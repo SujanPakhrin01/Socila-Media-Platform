@@ -1,6 +1,7 @@
 from . models import *
 from rest_framework import serializers
 from django.contrib.auth import get_user_model 
+from django.contrib.auth.models import Group
 
 User = get_user_model()
 
@@ -90,7 +91,7 @@ class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     class Meta:
         model = User
-        fields = ['username', 'password']
+        fields = ['username','password']
 
     def create(self, validated_data):
         user = User.objects.create_user(
@@ -99,6 +100,10 @@ class SignupSerializer(serializers.ModelSerializer):
         )
         return user
 
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ['id','name']
     
     
 

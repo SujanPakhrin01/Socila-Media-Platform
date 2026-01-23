@@ -9,16 +9,19 @@ from App.views import SignupView
 
 urlpatterns = [
     
-    path('api/signup/', SignupView.as_view()),    
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/SignUp/', SignupView.as_view()),    
+    path('api/Login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/Login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
-    path('api/profile/', ProfileView.as_view({'get': 'list'}), name='profile'),
-    path('api/home/', Home.as_view({'get': 'list','post':'create'}), name='home'),
-    path('api/comments/', CommentView.as_view({'get': 'list'}), name='comments'),
-    path('api/notifications/', NotifictionView.as_view({'get': 'list'}), name='notifications'),
-    path('api/follows/', FollowView.as_view({'get': 'list'}), name='follows'),
-    path('api/tags/', TagView.as_view({'get': 'list'}), name='tags'),
-    path('api/likes/', LikeView.as_view({'get': 'list'}), name='likes'),
-    path('api/analytics/', AnalyticsView.as_view({'get': 'list'}), name='analytics')
+    path('api/Profile/', ProfileView.as_view({'get': 'list'}), name='profile'),
+    path('api/Profile/<int:pk>/', ProfileView.as_view({'get': 'retrieve'}), name='profile-detail'),
+    path('api/Home/', Home.as_view({'get': 'list','post':'create'}), name='home'),
+    path('api/Comments/', CommentView.as_view({'get': 'list'}), name='comments'),
+    path('api/Notifications/', NotifictionView.as_view({'get': 'list'}), name='notifications'),
+    path('api/Notifications/pk', NotifictionView.as_view({'get': 'list'}), name='notifications'),
+    path('api/Follows/', FollowView.as_view({'get': 'list'}), name='follows'),
+    path('api/Tags/', TagView.as_view({'get': 'list'}), name='tags'),
+    path('api/Tags/pk', TagView.as_view({'get': 'list'}), name='tags'),
+    path('api/Likes/', LikeView.as_view({'get': 'list'}), name='likes'),
+    path('api/Analytics/', AnalyticsView.as_view({'get': 'list'}), name='analytics')
 ]
