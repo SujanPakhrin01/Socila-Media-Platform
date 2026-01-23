@@ -12,6 +12,7 @@ from django.core.cache import cache
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import SignupSerializer
 from rest_framework.permissions import IsAdminUser
+from django.contrib.auth.models import Group
 
 class Home(ModelViewSet):
     queryset = Post.objects.all()
@@ -134,7 +135,8 @@ class SignupView(GenericAPIView):
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            user.is_user = True
+            group = Group.objects.get(name='user')  # now this works
+            user.groups.add(group)
             user.save()
             refresh = RefreshToken.for_user(user)
 
@@ -151,4 +153,5 @@ class SignupView(GenericAPIView):
         user.is_user = True  # or any field you have for normal users
         user.save()
         return user
+    
     

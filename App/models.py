@@ -1,22 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-
-class Group(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
 class User(AbstractUser):
     Role_choices = (
         ('admin','Admin'),
         ('user',"User"),
     )
-    # username = models.CharField(max_length=50,unique=True)
-    # email = models.EmailField(unique=True)
+    username = models.CharField(max_length=50,unique=True)
+    email = models.EmailField(unique=False)
     profile_picture = models.ImageField(upload_to='profile_pics/',blank=True,null=True)
     bio = models.CharField(max_length=100,blank=True)
-    role = models.CharField(max_length=10,choices=Role_choices,default='user')
+    role = models.CharField(max_length=50, default="user")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     
@@ -117,6 +111,7 @@ class Analytics(models.Model):
     total_followers = models.PositiveIntegerField(default=0)
     total_following = models.PositiveIntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
+
 
 
     
