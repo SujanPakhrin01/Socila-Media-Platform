@@ -35,7 +35,9 @@ schema_view = get_schema_view(
    authentication_classes=[], 
 )
 
-urlpatterns = [
+from rest_framework_simplejwt.views import (TokenObtainPairView,TokenRefreshView,)
+
+urlpatterns = [ 
     path('admin/', admin.site.urls),
     path("", include("App.urls")),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
