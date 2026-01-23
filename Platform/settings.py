@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,11 +43,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     #"drf_spectacular",   #swagger
      'drf_yasg',
-    'django_seed',
-    
-   
-    
-    
+    'django_seed',   
+     
 ]
 
 MIDDLEWARE = [
@@ -77,6 +75,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Platform.wsgi.application'
+ASGI_APPLICATION = 'Platform.asgi.application'
 
 
 # Database
@@ -168,23 +167,34 @@ SWAGGER_SETTINGS = {
     }
 }
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            'PASSWORD': 'your-redis-password',  # if you set one
-            'SOCKET_CONNECT_TIMEOUT': 5,
-            'SOCKET_TIMEOUT': 5,
-            'CONNECTION_POOL_KWARGS': {
-                'max_connections': 50,
-                'retry_on_timeout': True
-            }
-        },
-        'KEY_PREFIX': 'App',  # Prevents key collisions
-        'TIMEOUT': 300,  # Default timeout: 5 minutes
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': 'redis://127.0.0.1:6379/1',
+#         'OPTIONS': {
+#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+#             'PASSWORD': 'your-redis-password',  # if you set one
+#             'SOCKET_CONNECT_TIMEOUT': 5,
+#             'SOCKET_TIMEOUT': 5,
+#             'CONNECTION_POOL_KWARGS': {
+#                 'max_connections': 50,
+#                 'retry_on_timeout': True
+#             }
+#         },
+#         'KEY_PREFIX': 'App',  # Prevents key collisions
+#         'TIMEOUT': 300,  # Default timeout: 5 minutes
+#     }
+# }
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [
+                ("127.0.0.1", 6379)
+            ]
+        }
     }
 }
-
 

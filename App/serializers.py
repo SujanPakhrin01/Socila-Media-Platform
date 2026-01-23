@@ -1,11 +1,9 @@
 from . models import *
 from rest_framework import serializers
 from django.contrib.auth import get_user_model 
+from django.contrib.auth.models import User
 
 User = get_user_model()
-
-
-
 class UserSerializer(serializers.ModelSerializer):
     follower_count = serializers.IntegerField(source = 'follower.count',read_only = True)
     following_count = serializers.IntegerField(source ='following.count',read_only = True )
@@ -14,14 +12,12 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id','username','email','profile_picture','bio','role','follower_count','following_count'
-        ]
-        
+        ]        
         
 class PostSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='User.username')
     likes_count = serializers.IntegerField(source='likes.count',read_only=True)
-    commeng_count = serializers.IntegerField(source='comment.count',read_only=True)
-    
+    commeng_count = serializers.IntegerField(source='comment.count',read_only=True)    
     class Meta:
         model = Post
         fields = '__all__'
@@ -34,7 +30,6 @@ class CommentSerializer(serializers.ModelSerializer):
         
 class LikeSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
-
     class Meta:
         model = Like
         fields = '__all__'
@@ -42,7 +37,6 @@ class LikeSerializer(serializers.ModelSerializer):
         
 class FollowSerializer(serializers.ModelSerializer):
     follower = serializers.ReadOnlyField(source='follower.username')
-
     class Meta:
         model = Follow
         fields = '__all__'
@@ -80,10 +74,26 @@ class NotificationSerializer(serializers.ModelSerializer):
         
 class AnalyticsSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
-
     class Meta:
         model = Analytics
         fields = '__all__'
+        
+
+
+
+class SignupSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            password=validated_data['password']
+        )
+        return user
+
     
     
 
