@@ -1,18 +1,21 @@
 from django.shortcuts import render
 from .models import *
-from .serializers import UserSerializer, PostSerializer, CommentSerializer, LikeSerializer, FollowSerializer, AnalyticsSerializer, NotificationSerializer,TagSerializer
-from rest_framework.generics import GenericAPIView
+from .serializers import UserSerializer, PostSerializer, CommentSerializer, LikeSerializer, FollowSerializer, AnalyticsSerializer, NotificationSerializer,TagSerializer,SignupSerializer
 from rest_framework.viewsets import ModelViewSet,GenericViewSet
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated,AllowAny
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework import filters
 from django.core.cache import cache
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import SignupSerializer
-from rest_framework.permissions import IsAdminUser
 from django.contrib.auth.models import Group
+from rest_framework import mixins, filters
+from rest_framework.permissions import ( IsAuthenticated, IsAdminUser, AllowAny)
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.contrib.auth import get_user_model
+User = get_user_model()
+from .permissions import IsOwnerOrAdmin
+
+
 
 class Home(ModelViewSet):
     queryset = Post.objects.all()
@@ -27,33 +30,23 @@ class Home(ModelViewSet):
         return Response(serializer.data)
     
     
-class ProfileView(GenericViewSet):
+class ProfileView(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.UpdateModelMixin,mixins.DestroyModelMixin,GenericViewSet):   
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserSerializer 
     authentication_classes = [JWTAuthentication] 
-    permission_classes = [IsAuthenticated]    
-    filter_backends = [filters.SearchFilter]
+    permission_classes = [IsAuthenticated] 
+    filter_backends = [filters.SearchFilter] 
     search_fields = ['id','username']
     
+
     def get_permissions(self):
         if self.action == 'list':
-            return [IsAdminUser()]
+            return [IsAdminUser()]          # admin only
         elif self.action == 'retrieve':
-            return [AllowAny()]
+            return [AllowAny()]             # public profile
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            return [IsAuthenticated(), IsOwnerOrAdmin()]
         return super().get_permissions()
-    
-
-    def list(self, request):       
-        users = self.get_queryset()
-        serializer = self.get_serializer(users, many=True)
-        return Response(serializer.data)
-    
-    
-    def retrieve(self, request,pk=None):
-        user = self.get_object()  # gets the user with the given pk
-        serializer = self.get_serializer(user)
-        return Response(serializer.data)
-    
     
 class CommentView(ModelViewSet):
     queryset = Comment.objects.all()
@@ -129,29 +122,22 @@ def NotificationChannel(request):
 
 
 class SignupView(GenericAPIView):
-    serializer_class = SignupSerializer 
+    serializer_class = SignupSerializer
     permission_classes = [AllowAny]
+
     def post(self, request):
-        serializer = SignupSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            group = Group.objects.get(name='user')  # now this works
-            user.groups.add(group)
-            user.save()
-            refresh = RefreshToken.for_user(user)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }, status=status.HTTP_201_CREATED)
+        user = serializer.save()
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # auto-assign group
+        group = Group.objects.get(name='user')
+        user.groups.add(group)
 
-    def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        # Automatically set as normal user
-        user.is_user = True  # or any field you have for normal users
-        user.save()
-        return user
-    
-    
+        refresh = RefreshToken.for_user(user)
+
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }, status=status.HTTP_201_CREATED)

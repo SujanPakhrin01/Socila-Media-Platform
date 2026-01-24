@@ -14,7 +14,8 @@ urlpatterns = [
     path('api/Login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
     path('api/Profile/', ProfileView.as_view({'get': 'list'}), name='profile'),
-    path('api/Profile/<int:pk>/', ProfileView.as_view({'get': 'retrieve'}), name='profile-detail'),
+    path('api/Profile/<int:pk>/', ProfileView.as_view({'get': 'retrieve','put': 'update', 'patch': 'partial_update','delete': 'destroy',}), name='profile-detail'),
+    
     path('api/Home/', Home.as_view({'get': 'list','post':'create'}), name='home'),
     path('api/Comments/', CommentView.as_view({'get': 'list'}), name='comments'),
     path('api/Notifications/', NotifictionView.as_view({'get': 'list'}), name='notifications'),
