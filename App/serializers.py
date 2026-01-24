@@ -2,11 +2,7 @@ from . models import *
 from rest_framework import serializers
 from django.contrib.auth import get_user_model 
 
-
 User = get_user_model()
-
-
-
 class UserSerializer(serializers.ModelSerializer):
     follower_count = serializers.IntegerField(source = 'follower.count',read_only = True)
     following_count = serializers.IntegerField(source ='following.count',read_only = True )

@@ -46,12 +46,7 @@ class Home(ModelViewSet):
         serializer = self.get_serializer(obj)
         return Response(serializer.data)  
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-    # def list(self, request):
-    #     posts = self.get_queryset()
-    #     serializer = self.get_serializer(posts, many=True)
-    #     return Response(serializer.data)
-    
+        serializer.save(user=self.request.user)    
     
 class ProfileView(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.UpdateModelMixin,mixins.DestroyModelMixin,GenericViewSet):   
     queryset = User.objects.all()
@@ -64,9 +59,9 @@ class ProfileView(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.UpdateM
 
     def get_permissions(self):
         if self.action == 'list':
-            return [IsAdminUser()]          # admin only
+            return [IsAdminUser()]        
         elif self.action == 'retrieve':
-            return [AllowAny()]             # public profile
+            return [AllowAny()]            
         elif self.action in ['update', 'partial_update', 'destroy']:
             return [IsAuthenticated(), IsOwnerOrAdmin()]
         return super().get_permissions()
