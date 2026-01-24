@@ -22,22 +22,25 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'user', 'created_at','text']
-        
-class PostSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='User.username')
-    likes_count = serializers.IntegerField(source='total_like', read_only=True)
-    comments = CommentSerializer(many=True, read_only=True)
-    class Meta:
-        model = Post
-        fields = ['id', 'user','content','image','likes_count','comments','created_at','updated_at']
-        
-        
 class LikeSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = Like
         fields = '__all__'
+        
+class PostSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+    likes_count = serializers.IntegerField(source='total_like', read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
+    liked_by = LikeSerializer(source='likes',many=True,read_only=True
+)
+
+    class Meta:
+        model = Post
+        fields = ['id','user','content','image','likes_count','liked_by','comments','created_at','updated_at',]
+        read_only_fields = ['id','user','likes_count','liked_by','comments','created_at', 'updated_at', ]
+        
         
         
 class FollowSerializer(serializers.ModelSerializer):

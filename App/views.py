@@ -14,20 +14,43 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth import get_user_model
 User = get_user_model()
 from .permissions import IsOwnerOrAdmin
+from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser, FormParser  #for image to appera in front end 
 
 
 
 class Home(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [AllowAny]
+    # permission_classes = [AllowAny]
     filter_backends = [filters.SearchFilter]
     search_fields = ['username','id']
-
-    def list(self, request):
-        posts = self.get_queryset()
-        serializer = self.get_serializer(posts, many=True)
-        return Response(serializer.data)
+    parser_classes = [MultiPartParser, FormParser] 
+    
+    def get_permissions(self):
+        if self.action == 'list':
+            return [AllowAny()]
+        elif self.action in ['retrieve', 'preview', 'create']:
+            return [IsAuthenticated()]
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            return [IsAuthenticated(), IsOwnerOrAdmin()]
+        return super().get_permissions()
+    
+    
+    @action(detail=True, methods=['get'])
+    def preview(self, request, pk=None):
+        """
+        Preview object before update or delete
+        """
+        obj = self.get_object()
+        serializer = self.get_serializer(obj)
+        return Response(serializer.data)  
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+    # def list(self, request):
+    #     posts = self.get_queryset()
+    #     serializer = self.get_serializer(posts, many=True)
+    #     return Response(serializer.data)
     
     
 class ProfileView(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.UpdateModelMixin,mixins.DestroyModelMixin,GenericViewSet):   
@@ -76,10 +99,13 @@ class FollowView(ModelViewSet):
     serializer_class = FollowSerializer
     authentication_classes = [JWTAuthentication] 
     permission_classes = [IsAuthenticated]
+    
     def list(self, request):
         posts = self.get_queryset()
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
+    
+    
 class TagView(ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer

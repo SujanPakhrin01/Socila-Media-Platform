@@ -6,5 +6,7 @@ class IsOwnerOrAdmin(BasePermission):
         if request.user.is_staff or request.user.is_superuser:
             return True
 
-        # user can only touch their own profile
-        return obj == request.user
+        # user can only touch their own post
+        return obj.user == request.user
+
+

@@ -13,10 +13,12 @@ urlpatterns = [
     path('api/Login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/Login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
-    path('api/Profile/', ProfileView.as_view({'get': 'list'}), name='profile'),
+    path('api/Profile/', ProfileView.as_view({'get': 'list','post':'create'}), name='profile'),
     path('api/Profile/<int:pk>/', ProfileView.as_view({'get': 'retrieve','put': 'update', 'patch': 'partial_update','delete': 'destroy',}), name='profile-detail'),
     
     path('api/Home/', Home.as_view({'get': 'list','post':'create'}), name='home'),
+    path('api/Home/<int:pk>', Home.as_view({'get': 'retrieve','put': 'update', 'patch': 'partial_update','delete': 'destroy',}), name='home'),
+    
     path('api/Comments/', CommentView.as_view({'get': 'list'}), name='comments'),
     path('api/Notifications/', NotifictionView.as_view({'get': 'list'}), name='notifications'),
     path('api/Notifications/pk', NotifictionView.as_view({'get': 'list'}), name='notifications'),
