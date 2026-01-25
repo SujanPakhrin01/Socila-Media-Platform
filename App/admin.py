@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Post, Comment, Like, Follow, Tag, Notification, Analytics
+from .models import User, Post, Comment, Like, Notification, Analytics
 
 class CommentInline(admin.TabularInline):
     model = Comment
@@ -9,7 +9,11 @@ class LikeInline(admin.TabularInline):
     model = Like
     extra = 0
 
-admin.site.register(User)
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('id', 'username', 'email', 'role', 'is_staff', 'is_active')
+    search_fields = ('id', 'username', 'email')
+    list_filter = ('role', 'is_staff', 'is_active')
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -18,8 +22,6 @@ class PostAdmin(admin.ModelAdmin):
     
 admin.site.register(Comment)
 admin.site.register(Like)
-admin.site.register(Follow)
-admin.site.register(Tag)
 admin.site.register(Analytics)
 # admin.site.register(Notification)
 
