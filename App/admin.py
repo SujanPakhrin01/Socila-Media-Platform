@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Post, Comment, Like, Follow, Tag, Notification, Analytics
+from .models import User, Post, Comment, Like, Notification, Analytics
 
 class CommentInline(admin.TabularInline):
     model = Comment
@@ -22,8 +22,6 @@ class PostAdmin(admin.ModelAdmin):
     
 admin.site.register(Comment)
 admin.site.register(Like)
-admin.site.register(Follow)
-admin.site.register(Tag)
 admin.site.register(Analytics)
 # admin.site.register(Notification)
 
