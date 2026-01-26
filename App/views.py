@@ -177,9 +177,6 @@ class AnalyticsView(ModelViewSet):
         return Response(serializer.data)
     
     
-# def NotificationChannel(request):
-#     return render(request,"index.html")
-
 
 
 
